@@ -1,5 +1,5 @@
 /*
- *  Project: Countid
+ *  Project: Countid 1.0
  *  Description: jQuery Plugin to count up and count down numbers
  *  Author: miso25
  *  License: MIT
@@ -251,3 +251,5 @@
     };
 
 }(jQuery, window, document));
+
+
