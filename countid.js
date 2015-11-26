@@ -60,9 +60,10 @@
 			
 			start : 0,
 			end : 0,
-			speed : 10,
-			tick : 10,
+			speed : 1,
+			tick : 1234.5678,
 			
+			format: false,
 			complete : false
 		},
 		
@@ -125,9 +126,11 @@
 			var start = self.config.start
 			var end = self.config.end
 			
-			var steps = Math.abs( start - end ) / self.config.tick
+			var steps = ( Math.abs( start - end ) /  self.config.tick  )  
 			var dir = start > end ? -1 * self.config.tick : self.config.tick
 			
+			
+			var start_s = start
 			//var bigger = start > end ? start : end
 			//var lower = start > end ? end : start
 			
@@ -135,18 +138,44 @@
 			//alert(steps)
 			//var start1 = 80
 			//var end1 = 40
-			
+
 			
 			var timer = setInterval( function(){
 			
 				if( steps >= 0 )
 				{
-					self.$elem.text( start )
+					start_s = start
+					//if( start_pom % 1 !== 0 )		// not integer - float
+					if( typeof self.config.format === 'function')
+					start_s = self.config.format( start_s )
+					//start_pom =  start_pom.toString();
+					//start_pom = addCommas(start_pom)
+					//start_pom = start_pom.toFixed(1).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+					//start_pom = start_pom.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+					// 
+					
+					//console.log( typeof start_pom )
+					
+					self.$elem.text( start_s )
+					
 					start += dir
 					steps -= 1
 				}
 				else
 				{
+					//console.log( self.config.tick % 1 === 0 )
+					if( self.config.tick % 1 !== 0 )		// not integer - float
+					{
+						//var end2 = end
+						if( typeof self.config.format === 'function')
+						end = self.config.format( end )
+					
+						//var end2 = end.toFixed(1)
+						//end2 = addCommas(end2)
+						//end2 = end2.replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+						self.$elem.text( end )
+					}
+					
 					clearInterval( timer )
 					
 					if( typeof self.config.complete === 'function')
