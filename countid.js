@@ -60,8 +60,8 @@
 			
 			start : 0,
 			end : 0,
-			speed : 1,
-			tick : 1234.5678,
+			speed : 10,
+			tick : 10,
 			
 			format: false,
 			complete : false
