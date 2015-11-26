@@ -164,7 +164,7 @@
 				else
 				{
 					//console.log( self.config.tick % 1 === 0 )
-					if( self.config.tick % 1 !== 0 )		// not integer - float
+					//if( self.config.tick % 1 !== 0 )		// not integer - float
 					{
 						//var end2 = end
 						if( typeof self.config.format === 'function')
