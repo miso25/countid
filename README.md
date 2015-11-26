@@ -4,6 +4,9 @@ jQuery Plugin to count up and count down numbers
 # Usage
 jsFiddle example for [count up](https://jsfiddle.net/miso25/x89kLoqc/) and [count down](https://jsfiddle.net/miso25/4a4j0bgd/)
 
+# Custom formatting
+See [jsFiddle](https://jsfiddle.net/miso25/f3vu8pdh/) example to customize your number output 
+
 # Options
 A complete listing of the options that can be passed to the method is below.
 
