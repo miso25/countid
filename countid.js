@@ -475,6 +475,7 @@
 			//alert( self.dir )
 			
 			self.current = val
+			self.$elem.text( self.current )
 			self._setSteps( self.current, self.config.end )
 			
 			cancelRequestAnimFrame(self.request);
