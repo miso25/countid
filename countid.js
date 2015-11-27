@@ -160,9 +160,12 @@
 			//if( start === undefined ) start =  self.config.start
 			//if( end === undefined ) end =  self.config.end
 			
+				
 			self.start = 1 * start
 			self.end = 1 * end
 			self.current = self.start
+			
+			self.$elem.text( self.start )
 			
 			self.step = 1 * ( Math.abs( self.current - self.end ) /  self.config.tick  )  
 			self.dir = self.current > self.end ? -1 : 1;
@@ -475,7 +478,7 @@
 			//alert( self.dir )
 			
 			self.current = val
-			self.$elem.text( self.current )
+			
 			self._setSteps( self.current, self.config.end )
 			
 			cancelRequestAnimFrame(self.request);
