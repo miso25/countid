@@ -145,31 +145,7 @@
 				//})
 			//  });
 			
-			self.$elem.on('mouseenter', function(){
 			
-				self.pause()
-				//self.paused = true
-				//cancelRequestAnimFrame(self.request);
-				//self.request = 0
-				//alert( self.request )
-			})
-			
-			self.$elem.on('mouseleave', function(){
-			
-				self.unpause()
-				//self.paused = false
-				//cancelRequestAnimFrame( self.request );
-				//self._loop()
-			})
-			
-			self.$elem.on('click', function(){
-
-				//self.refresh()
-				
-				self.setCurrent( 150 )
-				//self.toggleDir()
-
-			})
 			
 
 			//alert(text)
