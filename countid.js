@@ -255,7 +255,7 @@
 			
 			
 			var fps,fpsInterval,startTime,now,then,delta;
-			fps = 10	// highest number = highest speed
+			fps = self.config.speed	// highest number = highest speed
 			
 			
 			fpsInterval = 1000 / fps;
