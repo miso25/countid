@@ -107,6 +107,7 @@
 			self.id = self._getRandomInt(999,99999)
 			
 			self.timer = {}
+			self.isPaused = false
 			//alert(typeof self.config.end)
 			
 			if( self.config.start === 0 && self.config.end === 0 )
@@ -145,7 +146,7 @@
 				//})
 			//  });
 			
-			
+
 			
 
 			//alert(text)
@@ -496,17 +497,29 @@
 			self._loop( )
 		},
 
+		togglePause : function(){
+		
+			var self = this
+			//cancelRequestAnimFrame(self.request);
+			if(self.isPaused)
+			self.unpause()
+			else
+			self.pause()
+			
+		},
+
 		
 		pause : function(){
 		
 			var self = this
 			cancelRequestAnimFrame(self.request);
-		
+			self.isPaused = true
 		},
 
 		unpause : function(){
 			var self = this
 			//self._loopRefresh()
+			self.isPaused = false
 			cancelRequestAnimFrame( self.request );
 			self._loop( )
 		},
