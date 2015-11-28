@@ -88,8 +88,8 @@
 			clock: false,
 			switchClock: true,
 			dateTime: 0,
-			dateTpl: 'Remaining time: %D days and %H:%M:%S ', // '%Y %O %W %D %H %M %S %U',
-			dateTplAlt: 'Elapsed time: %D days and %H:%M:%S ', // '%Y %O %W %D %H %M %S %U',
+			dateTplRemaining: 'Remaining time: %D days and %H:%M:%S ', // '%Y %O %W %D %H %M %S %U',
+			dateTplElapsed: 'Elapsed time: %D days and %H:%M:%S ', // '%Y %O %W %D %H %M %S %U',
 			
 			format: false,
 			complete : false
@@ -117,7 +117,7 @@
 			self.speed = self.config.speed
 			self.tick = self.config.tick
 			self.clock = self.config.clock
-			self.dateTpl = self.config.dateTpl
+			self.dateTpl = self.config.dateTplRemaining
 			//alert(typeof self.config.end)
 			
 			if( self.config.start === 0 && self.config.end === 0 )
@@ -198,7 +198,9 @@
 			else	// input date is bigger than now = counting remaining time
 			{
 				//self.config.start = end - start
-				start = end_floor - now_floor
+				start = end_floor - now_floor + 1000
+				//start = 5555
+				//end = 0
 				//end = 0
 			}
 			//console.log( now_floor + ' - ' + end_floor );
@@ -230,7 +232,10 @@
 			
 			self._setSteps( st[0], st[1] )
 
-
+			if( st[0] < st[1])
+			self.dateTpl = self.config.dateTplElapsed
+			//self.dateTpl = self.config.dateTplAlt
+			
 			var tpl = self.dateTpl
 			var tplYears = tpl.search("%Y") !== -1 ? true : false
 			var tplMonths = tpl.search("%Y") !== -1 ? true : false
@@ -245,6 +250,8 @@
 			//var start_clock = '11/27/15' 
 			//var end_clock = '11/28/15' 
 			//alert(tpl)
+			
+			
 			self.config.format = function( val ){ 
 			
 				
@@ -288,6 +295,7 @@
 				if(tplMinutes)
 				{
 					minutes = Math.floor( sec / ( 60*1000 ) )
+					//minutes.toString().length < 2 ? pad("0" + str, max) : str;
 					thisTpl = thisTpl.replace( "%M", minutes )
 					sec = sec - minutes*60*1000
 				}
@@ -390,7 +398,7 @@
 			 //var start_s = start
 			 
 			//if( self.step >= 0 )
-			if( self.step > 0 )
+			if( self.step >= 0 )
 			{
 				
 				
@@ -433,16 +441,18 @@
 				//{
 				if( typeof self.config.format === 'function')
 				end = self.config.format( end )
+				
 				self.$elem.text( end )
 				//}
 				//}
+				
 				
 				if(self.clock && self.config.switchClock)	// switch clock counter
 				{
 					//self._setSteps( self.end, self.start )
 					//cancelRequestAnimFrame( self.request );
 					//alert(53)
-					self.dateTpl = self.config.dateTplAlt
+					
 					self._setClock()
 					self._loop()
 				}
@@ -451,6 +461,9 @@
 				
 				if( typeof self.config.complete === 'function')
 				self.config.complete( self.$elem )
+				
+				
+				
 				
 				
 				//self._setSteps( self.end, self.start )
