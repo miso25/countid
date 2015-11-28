@@ -88,8 +88,8 @@
 			clock: false,
 			switchClock: true,
 			dateTime: 0,
-			dateTpl: 'Remaining time: %H:%M:%S ', // '%Y %O %W %D %H %M %S %U',
-			dateTplAlt: 'Elapsed time: %H:%M:%S ', // '%Y %O %W %D %H %M %S %U',
+			dateTpl: 'Remaining time: %D days and %H:%M:%S ', // '%Y %O %W %D %H %M %S %U',
+			dateTplAlt: 'Elapsed time: %D days and %H:%M:%S ', // '%Y %O %W %D %H %M %S %U',
 			
 			format: false,
 			complete : false
