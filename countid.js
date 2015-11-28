@@ -31,7 +31,8 @@
 					return window.setTimeout(callback, 1000 / 60);
 				};
 		})();
-			
+	
+	
     // undefined is used here as the undefined global variable in ECMAScript 3 is
     // mutable (ie. it can be changed by someone else). undefined isn't really being
     // passed in so we can ensure the value of it is truly undefined. In ES5, undefined
@@ -206,12 +207,13 @@
 			//console.log( now_floor + ' - ' + end_floor );
 			//
 			
-			self.step = Math.floor( start / 1000 )
+
+			self.step = Math.floor( start / 1000 ) + 1
 			//var x = 1 * ( Math.abs( self.current - start ) /  self.tick  )
 			
 			//console.log( start + ' - ' + end + ' / '+ self.step);
 			
-			return [ start, end  ]
+			return [ start, end ]
 		},
 		
 		
@@ -232,14 +234,16 @@
 			
 			self._setSteps( st[0], st[1] )
 
-			if( st[0] < st[1])
+			if( st[0] < st[1] )
 			self.dateTpl = self.config.dateTplElapsed
 			//self.dateTpl = self.config.dateTplAlt
 			
 			var tpl = self.dateTpl
-			var tplYears = tpl.search("%Y") !== -1 ? true : false
-			var tplMonths = tpl.search("%Y") !== -1 ? true : false
 			
+			var tplYears = tpl.search("%Y") !== -1 ? true : false
+			//var tplYearsMand = tpl.search("%y") !== -1 ? true : false
+			var tplMonths = tpl.search("%O") !== -1 ? true : false
+			var tplWeeks = tpl.search("%W") !== -1 ? true : false
 			var tplDays = tpl.search("%D") !== -1 ? true : false
 			var tplHours = tpl.search("%H") !== -1 ? true : false
 			var tplMinutes = tpl.search("%M") !== -1 ? true : false
@@ -250,69 +254,131 @@
 			//var start_clock = '11/27/15' 
 			//var end_clock = '11/28/15' 
 			//alert(tpl)
+			self.secLeft = false;
+			//self.thisTpl = tpl;
 			
+			function zeroPad(num, places) {
+			  var zero = places - num.toString().length + 1;
+			  return Array(+(zero > 0 && zero)).join("0") + num;
+			}
+			var maskTime={
+			'Y' : 60*60*24*365*1000,
+			'O' : 60*60*24*30.4368*1000,
+			'W' : 60*60*24*7*1000,
+			'D' : 60*60*24*1000,
+			'H' : 60*60*1000,
+			'M' : 60*1000,
+			'S' : 1000,
+			'U' : 1
+			}
+			var maskPad={
+			'Y' : 0,
+			'O' : 0,
+			'W' : 0,
+			'D' : 0,
+			'H' : 2,
+			'M' : 2,
+			'S' : 2,
+			'U' : 3
+			}
+			function setT( m, thisTpl )
+			{
+				var ptime = Math.floor( self.secLeft / ( maskTime[ m ] ))
+				var stime = maskPad[ m ] > 0 ? zeroPad( ptime, maskPad[ m ] ) : ptime
+				//self.secLeft = ptime
+				self.thisTpl = self.thisTpl.replace( "%" + m, stime )
+				self.secLeft = self.secLeft - ptime * maskTime[ m ] 
+				//return thisTpl
+			}
 			
 			self.config.format = function( val ){ 
 			
+				//console.log(self.end)
+				
 				
 				var st = self._setTime()
 				
-				var sec = st[0] 
+				var msec = st[0] 
+				self.secLeft = msec
 				
-				var thisTpl = tpl
-				var years = 0
-				var months = 0
-				var days = 0
-				var hours = 0
-				var minutes = 0
-				var seconds = 0
-				var mseconds = 0
-				//var sec = seconds
+				//var thisTpl = tpl
+				self.thisTpl = tpl
+				//var years = 0
+				//var months = 0
+				//var weeks = 0
+				//var days = 0
+				//var hours = 0
+				//var minutes = 0
+				//var seconds = 0
+				//var mseconds = 0
+				var ptime = 0
+				//var msec = seconds
+				
+				//msec = setd( thisTpl, tplYears )
+				 tplYears ? setT('Y') : ''
+				 tplMonths ? setT('O') : ''
+				 tplWeeks ? setT('W') : ''
+				 tplDays ? setT('D') : ''
+				 tplHours ? setT('H') : ''
+				 tplMinutes ? setT('M') : ''
+				 tplSeconds ? setT('S') : ''
+				 tplMseconds ? setT('U') : ''
+				
+				/*
 				if(tplYears)
 				{
-					years = Math.floor(sec / (60*60*24*365*1000))
-					thisTpl = thisTpl.replace( "%Y", years )
-					sec = sec - years*60*60*24*365*1000
+					ptime = Math.floor(msec / ( mask['Y'] ))
+					thisTpl = thisTpl.replace( "%Y", ptime )
+					msec = msec - ptime* mask['Y'] 
 				}
 				if(tplMonths)
 				{
-					//months = Math.floor(sec / (60*60*24*31*1000))
-					//thisTpl = thisTpl.replace( "%O", months )
-					//sec = sec - months*60*60*24*31*1000
+					ptime = Math.floor(msec / ( mask['O'] ))
+					thisTpl = thisTpl.replace( "%O", ptime )
+					msec = msec - ptime* mask['O'] 
+				}
+				if(tplWeeks)
+				{
+					ptime = Math.floor(msec / ( mask['W']))
+					thisTpl = thisTpl.replace( "%W", ptime )
+					msec = msec - ptime* mask['W'] 
 				}
 				if(tplDays)
 				{
-					days = Math.floor(sec / (60*60*24*1000))
-					thisTpl = thisTpl.replace( "%D", days )
-					sec = sec - days*60*60*24*1000
+					ptime = Math.floor(msec / ( mask['D'] ))
+					thisTpl = thisTpl.replace( "%D", ptime )
+					msec = msec - ptime* mask['D'] 
 				}
 				if(tplHours)
 				{
-					hours = Math.floor( sec / ( 60*60*1000 ) )
-					thisTpl = thisTpl.replace( "%H", hours )
-					sec = sec - hours*60*60*1000
+					ptime = Math.floor( msec / ( mask['H'] ) )
+					thisTpl = thisTpl.replace( "%H", zeroPad(ptime,2) )
+					msec = msec - ptime* mask['H'] 
 				}
 				if(tplMinutes)
 				{
-					minutes = Math.floor( sec / ( 60*1000 ) )
+					ptime = Math.floor( msec / ( mask['M']  ) )
 					//minutes.toString().length < 2 ? pad("0" + str, max) : str;
-					thisTpl = thisTpl.replace( "%M", minutes )
-					sec = sec - minutes*60*1000
+					thisTpl = thisTpl.replace( "%M", zeroPad(ptime,2) )
+					msec = msec - ptime * mask['M'] 
 				}
 				if(tplSeconds)
 				{
-					seconds = Math.floor( sec / 1000 )
-					thisTpl = thisTpl.replace( "%S", seconds )
-					sec = sec - seconds*1000
+					ptime = Math.floor( msec / mask['S'] )
+					//var n = zeroPad(seconds,2).toString()
+					thisTpl = thisTpl.replace( "%S", zeroPad(ptime,2) )
+					msec = msec - ptime*mask['S']
 				}
 				if(tplMseconds)
 				{
-					//mseconds = Math.floor( sec  )
-					thisTpl = thisTpl.replace( "%U", sec )
-					//sec = sec - minutes*60
+					//mseconds = Math.floor( msec  )
+					thisTpl = thisTpl.replace( "%U", zeroPad(msec,3) )
+					//msec = msec - minutes*60
 				}
+				*/
 				
-				//thisTpl = thisTpl.replace( "%H", Math.floor(sec / (60*60)) )
+				
+				//thisTpl = thisTpl.replace( "%H", Math.floor(msec / (60*60)) )
 				//var d
 				//self.step = 1 * ( Math.abs( st[0] - st[1] ) /  self.tick  )
 				//var seconds = Math.floor((dateFuture - (dateNow))/1000);
@@ -320,8 +386,9 @@
 				//var hours = Math.floor(minutes/60);
 				//var days = Math.floor(hours/24);
 				//var diff = dateDiff(seconds)
+				//console.log( self.thisTpl )
 				
-				return thisTpl
+				return self.thisTpl
 				
 				//var n = 0			//  zostava este do
 				
@@ -377,12 +444,13 @@
 			self.current = self.start
 			
 			if(!self.clock)
-			self.$elem.text( self.start )
+			self.$elem.html( self.start )
 			
 			self.step = 1 * ( Math.abs( self.current - self.end ) / self.tick  )  
 			self.dir = self.current > self.end ? -1 : 1;
 			self.tick = self.dir * self.tick;
 			
+			//alert( (self.current - self.end)  / self.tick )
 			//alert( self.current - self.end )
 			//alert(self.step)
 		},
@@ -398,9 +466,11 @@
 			 //var start_s = start
 			 
 			//if( self.step >= 0 )
-			if( self.step >= 0 )
+			if( self.step > 0 )
 			{
 				
+				//alert( self.step )
+				//console.log( self.step )
 				
 				var start_s = self.current
 				
@@ -418,12 +488,12 @@
 				
 				
 				//if(self.clock
-				self.$elem.text( start_s )
-				
-				
+				self.$elem.html( start_s )
 				
 				self.step -= 1
 				self.current += self.tick
+				
+				
 			}
 			else
 			{
@@ -434,7 +504,7 @@
 				
 			
 				//var end2 = end.toFixed(1)
-				//end2 = addCommas(end2)
+				//end2 = addCommas(end2) //text
 				//end2 = end2.replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
 				
 				
@@ -442,7 +512,7 @@
 				if( typeof self.config.format === 'function')
 				end = self.config.format( end )
 				
-				self.$elem.text( end )
+				self.$elem.html( end )
 				//}
 				//}
 				
