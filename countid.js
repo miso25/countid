@@ -207,7 +207,7 @@
 			self.step = Math.floor( start / 1000 )
 			//var x = 1 * ( Math.abs( self.current - start ) /  self.tick  )
 			
-			console.log( start + ' - ' + end + ' / '+ self.step);
+			//console.log( start + ' - ' + end + ' / '+ self.step);
 			
 			return [ start, end  ]
 		},
