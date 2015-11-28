@@ -85,6 +85,12 @@
 			speed : 10,
 			tick : 10,
 			
+			clock: false,
+			switchClock: true,
+			dateTime: 0,
+			dateTpl: '%Y %O %W %D %H %M %S %U',
+			dateTplAlt: '%Y %O %W %D %H %M %S %U',
+			
 			format: false,
 			complete : false
 		},
@@ -108,6 +114,10 @@
 			
 			self.timer = {}
 			self.isPaused = false
+			self.speed = self.config.speed
+			self.tick = self.config.tick
+			self.clock = self.config.clock
+			self.dateTpl = self.config.dateTpl
 			//alert(typeof self.config.end)
 			
 			if( self.config.start === 0 && self.config.end === 0 )
@@ -121,9 +131,13 @@
 			
 			
 			
+			
 			//self.steps = 1 * ( Math.abs( self.current - self.end ) /  self.config.tick  )  
 			//self.dir = self.current > self.end ? -1 * self.config.tick : 1 * self.config.tick;
 			self._setSteps( self.config.start, self.config.end )
+			
+			if(self.clock)
+			self._setClock()
 			
 			
 			if( typeof self.$elem.waypoint === 'function' )
@@ -154,6 +168,195 @@
 		},
 		
 		
+		_setTime: function()
+		{
+			var self = this
+			
+			var now = Date.now()
+			//var d = new Date("Wed Jun 20 19:20:44 +0000 2012");
+			var t = new Date( self.config.dateTime ).getTime();
+			//var d1 = new Date("11/28/2015 15:30");
+			//var t= d.getTime(); //returns miliseconds
+			//var t1= d1.getTime(); //returns miliseconds
+			
+			var now_floor = 1 * Math.floor( now / 1 ) 
+			var end_floor = 1 * ( t / 1 )
+			
+			
+			var start = ( Math.abs( now_floor - end_floor ) )
+			var end = 0
+			
+			//alert(start)
+			
+			if( now_floor > end_floor ) 	// now is bigger than input date = counting elapsed time
+			{
+				end = 9999999999999999
+				//alert(start2)
+				//alert(end)
+				//self.remaining = false
+			}
+			else	// input date is bigger than now = counting remaining time
+			{
+				//self.config.start = end - start
+				start = end_floor - now_floor
+				//end = 0
+			}
+			//console.log( now_floor + ' - ' + end_floor );
+			//
+			
+			self.step = Math.floor( start / 1000 )
+			//var x = 1 * ( Math.abs( self.current - start ) /  self.tick  )
+			
+			console.log( start + ' - ' + end + ' / '+ self.step);
+			
+			return [ start, end  ]
+		},
+		
+		
+		_setClock: function()
+		{
+			
+			var self = this
+			//var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+			//var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+			// clock
+			
+			//alert(start + " = " + end)
+			
+			self.speed = 1000 
+			self.tick = 1 
+
+			var st = self._setTime()
+			
+			self._setSteps( st[0], st[1] )
+
+
+			var tpl = self.dateTpl
+			var tplYears = tpl.search("%Y") !== -1 ? true : false
+			var tplMonths = tpl.search("%Y") !== -1 ? true : false
+			
+			var tplDays = tpl.search("%D") !== -1 ? true : false
+			var tplHours = tpl.search("%H") !== -1 ? true : false
+			var tplMinutes = tpl.search("%M") !== -1 ? true : false
+			var tplSeconds = tpl.search("%S") !== -1 ? true : false
+			var tplMseconds = tpl.search("%U") !== -1 ? true : false
+			//alert(tplDays)
+			//alert(self.end)
+			//var start_clock = '11/27/15' 
+			//var end_clock = '11/28/15' 
+			//alert(tpl)
+			self.config.format = function( val ){ 
+			
+				
+				var st = self._setTime()
+				
+				var sec = st[0] 
+				
+				var thisTpl = tpl
+				var years = 0
+				var months = 0
+				var days = 0
+				var hours = 0
+				var minutes = 0
+				var seconds = 0
+				var mseconds = 0
+				//var sec = seconds
+				if(tplYears)
+				{
+					years = Math.floor(sec / (60*60*24*365*1000))
+					thisTpl = thisTpl.replace( "%Y", years )
+					sec = sec - years*60*60*24*365*1000
+				}
+				if(tplMonths)
+				{
+					//months = Math.floor(sec / (60*60*24*31*1000))
+					//thisTpl = thisTpl.replace( "%O", months )
+					//sec = sec - months*60*60*24*31*1000
+				}
+				if(tplDays)
+				{
+					days = Math.floor(sec / (60*60*24*1000))
+					thisTpl = thisTpl.replace( "%D", days )
+					sec = sec - days*60*60*24*1000
+				}
+				if(tplHours)
+				{
+					hours = Math.floor( sec / ( 60*60*1000 ) )
+					thisTpl = thisTpl.replace( "%H", hours )
+					sec = sec - hours*60*60*1000
+				}
+				if(tplMinutes)
+				{
+					minutes = Math.floor( sec / ( 60*1000 ) )
+					thisTpl = thisTpl.replace( "%M", minutes )
+					sec = sec - minutes*60*1000
+				}
+				if(tplSeconds)
+				{
+					seconds = Math.floor( sec / 1000 )
+					thisTpl = thisTpl.replace( "%S", seconds )
+					sec = sec - seconds*1000
+				}
+				if(tplMseconds)
+				{
+					//mseconds = Math.floor( sec  )
+					thisTpl = thisTpl.replace( "%U", sec )
+					//sec = sec - minutes*60
+				}
+				
+				//thisTpl = thisTpl.replace( "%H", Math.floor(sec / (60*60)) )
+				//var d
+				//self.step = 1 * ( Math.abs( st[0] - st[1] ) /  self.tick  )
+				//var seconds = Math.floor((dateFuture - (dateNow))/1000);
+				//var minutes = Math.floor(seconds/60);
+				//var hours = Math.floor(minutes/60);
+				//var days = Math.floor(hours/24);
+				//var diff = dateDiff(seconds)
+				
+				return thisTpl
+				
+				//var n = 0			//  zostava este do
+				
+				//var now = Date.now() 
+				//var now_floor = 1 * (now / 1000) 
+				//if(self.config.start < self.config.end)
+							
+				//n = val
+				//var days =  n / (3600*24)
+				//var hours =  n / (3600*24)
+				//var total = self.config.start
+				//var diff = Math.abs( self.diff - val )
+				//var theDate = new Date(val * 1000);
+				//var dateString = theDate.toGMTString();
+				
+				//var n = val - self.config.end 
+				
+				//n = val
+				//var d = new Date( val );
+				//console.log( dateString )
+				
+				//return n
+				//
+				//var d = new Date();
+				//var day = days[d.getDay()];
+				//var hr = d.getHours();
+				//var min = d.getMinutes();
+				//var sec = d.getSeconds();
+				//if (min < 10) {
+				//	min = "0" + min;
+				//}
+				//var ampm = hr < 12 ? "am" : "pm";
+				//var date = d.getDate();
+				//var month = months[d.getMonth()];
+				//var year = d.getFullYear();
+				//var x = document.getElementById("time");
+				//return day + " " + hr + ":" + min + sec + ampm + " " + date + " " + month + " " + year;
+
+				//return val 
+			} 
+			
+		},
+		
 		_setSteps: function ( start, end )
 		{
 			var self = this
@@ -165,11 +368,15 @@
 			self.end = 1 * end
 			self.current = self.start
 			
+			if(!self.clock)
 			self.$elem.text( self.start )
 			
-			self.step = 1 * ( Math.abs( self.current - self.end ) /  self.config.tick  )  
+			self.step = 1 * ( Math.abs( self.current - self.end ) / self.tick  )  
 			self.dir = self.current > self.end ? -1 : 1;
-			self.tick = self.dir * self.config.tick;
+			self.tick = self.dir * self.tick;
+			
+			//alert( self.current - self.end )
+			//alert(self.step)
 		},
 		
 		_rep: function ()
@@ -177,52 +384,80 @@
 			var self = this
 			
 			 //console.log( Date.now() )
-			// console.log( self.steps )
+			
+			 //console.log( self.step )
 			 
 			 //var start_s = start
 			 
-			if( self.step >= 0 )
-					{
-						var start_s = self.current
-						//if( start_pom % 1 !== 0 )		// not integer - float
-						if( typeof self.config.format === 'function')
-						start_s = self.config.format( start_s )
-						//start_pom =  start_pom.toString();
-						//start_pom = addCommas(start_pom)
-						//start_pom = start_pom.toFixed(1).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
-						//start_pom = start_pom.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-						// 
-						
-						//self.config.speed = self.config.speed + 100
-						
-						
-						
-						self.$elem.text( start_s )
-						
-						self.current += self.tick
-						self.step -= 1
-						
-					}
-					else
-					{
-						// cancelAnimationFrame(globalID);
-						cancelRequestAnimFrame(self.request);
-						 
-						 var end = self.end
-						if( typeof self.config.format === 'function')
-						end = self.config.format( end )
-					
-						//var end2 = end.toFixed(1)
-						//end2 = addCommas(end2)
-						//end2 = end2.replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
-						self.$elem.text( end )
-						//}
-						
-						//clearInterval( self.timer )
-						
-						if( typeof self.config.complete === 'function')
-						self.config.complete( self.$elem )
-					}
+			//if( self.step >= 0 )
+			if( self.step > 0 )
+			{
+				
+				
+				var start_s = self.current
+				
+				
+				//if( start_pom % 1 !== 0 )		// not integer - float
+				if( typeof self.config.format === 'function')
+				start_s = self.config.format( start_s )
+				//start_pom =  start_pom.toString();
+				//start_pom = addCommas(start_pom)
+				//start_pom = start_pom.toFixed(1).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+				//start_pom = start_pom.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+				// 
+				
+				//self.config.speed = self.config.speed + 100
+				
+				
+				//if(self.clock
+				self.$elem.text( start_s )
+				
+				
+				
+				self.step -= 1
+				self.current += self.tick
+			}
+			else
+			{
+				// cancelAnimationFrame(globalID);
+				cancelRequestAnimFrame(self.request);
+				 
+				var end = self.end
+				
+			
+				//var end2 = end.toFixed(1)
+				//end2 = addCommas(end2)
+				//end2 = end2.replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+				
+				
+				//{
+				if( typeof self.config.format === 'function')
+				end = self.config.format( end )
+				self.$elem.text( end )
+				//}
+				//}
+				
+				if(self.clock && self.config.switchClock)	// switch clock counter
+				{
+					//self._setSteps( self.end, self.start )
+					//cancelRequestAnimFrame( self.request );
+					//alert(53)
+					self.dateTpl = self.config.dateTplAlt
+					self._setClock()
+					self._loop()
+				}
+				
+				//clearInterval( self.timer )
+				
+				if( typeof self.config.complete === 'function')
+				self.config.complete( self.$elem )
+				
+				
+				//self._setSteps( self.end, self.start )
+				//cancelRequestAnimFrame( self.request );
+				//self._setClock()
+				//self._loop()
+			}
 		
 				
 		},
@@ -235,7 +470,7 @@
 			
 			
 			var fps,fpsInterval,startTime,now,then,delta;
-			fps = self.config.speed	// highest number = highest speed
+			fps = self.speed	// highest number = highest speed
 			
 			
 			fpsInterval = 1000 / fps;
