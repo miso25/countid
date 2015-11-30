@@ -139,8 +139,17 @@
 			self._setSteps( self.config.start, self.config.end )
 			
 			if(self.clock)
-			self._setClock()
-			
+			{
+				// initial date validation
+				if(!isNaN(self.config.dateTime))	// date is in seconds
+				{
+					//var now = 
+					self.config.dateTime = new Date(self.config.dateTime * 1000);
+					//alert( now )
+					//alert(self.config.dateTime)
+				}
+				self._setClock()
+			}
 			
 			if( typeof self.$elem.waypoint === 'function' )
 			self.$elem.waypoint( function(){ self._loop() }, { offset: '100%', triggerOnce: true });
@@ -235,8 +244,17 @@
 			'U' : 1
 			}
 			
+			
+			
+			
+			//alert(self.config.dateTime)
 			// date validation
+			
+			//var now = 1 * self.config.dateTime;
+			
 			var t = new Date( self.config.dateTime ).getTime();
+			
+			
 			if( isNaN(t) )
 			{	
 				
