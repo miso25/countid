@@ -24,4 +24,4 @@ speed | data-speed  | 10  | speed in fps - frames per seconds
 tick | data-tick  | 10  | tick
 clock | data-clock  | false  | clock
 switchClock | data-switch-clock  | true  | switchClock
-dateTime | data-date-time  | '%m/%d/%y %h:%i:%s' | Possible formats: You can set this value to specific MM/DD/YYYY H:i:s date or you can set a mask '%m/%d/%y %h:%i:%s' and every mask input will be replaced by current datetime value. For example you can set this option to '%12/%24/%y' and the counter will count up or count down to this year Christmas Eve.
+dateTime | data-date-time  | '%m/%d/%y %h:%i:%s' | Possible formats: You can set this value to specific MM/DD/YYYY H:i:s date or you can set a mask '%m/%d/%y %h:%i:%s' and every mask input will be replaced by current datetime value. For example you can set this option to '12/24/%y' and the counter will count up or count down to/from the Christmas Eve of this year.
