@@ -17,6 +17,8 @@ Option | Data Attribute | Default | Description
 ----|------|----|----
 start | data-start  | 0  | start
 end | data-end  | 0  | end
-speed | data-speed  | 10  | speed
+speed | data-speed  | 10  | speed in fps - frames per seconds
 tick | data-tick  | 10  | tick
+clock | data-clock  | false  | clock
+switchClock | data-switch-clock  | true  | switchClock
 dateTime | data-date-time  | 1/1/1970 | Possible formats: You can set this value to absolute MM/DD/YYYY H:i:s or MM/DD/YYYY or relative MM/DD or H:i or H:i:s ; when relative value is set, counter is counting up or counting down to the provided value of the current year/day
