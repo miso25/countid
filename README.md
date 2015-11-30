@@ -1,6 +1,9 @@
 # Countid
 jQuery Plugin to count up and count down numbers or clock times
 
+# Requirements:
+Countid plugin requires the latest version of [jQuery](http://jquery.com/). Also you can include [waypoints plugin](https://github.com/imakewebthings/waypoints) to execute the counting after you scroll to the countid element
+
 # Usage
 jsFiddle example for [count up](https://jsfiddle.net/miso25/x89kLoqc/) and [count down](https://jsfiddle.net/miso25/4a4j0bgd/)
 
