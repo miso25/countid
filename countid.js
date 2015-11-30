@@ -88,7 +88,7 @@
 			
 			clock: false,
 			switchClock: true,
-			dateTime: 0,
+			dateTime: '%m/%d/%y %h:%i:%s',
 			dateTplRemaining: 'Remaining time: %D days and %H:%M:%S ', // '%Y %O %W %D %H %M %S %U',
 			dateTplElapsed: 'Elapsed time: %D days and %H:%M:%S ', // '%Y %O %W %D %H %M %S %U',
 			
@@ -118,6 +118,7 @@
 			self.speed = self.config.speed
 			self.tick = self.config.tick
 			self.clock = self.config.clock
+			//self.currentTime = false
 			self.dateTpl = self.config.dateTplRemaining
 			//alert(typeof self.config.end)
 			
@@ -188,7 +189,6 @@
 			var end = 0
 			
 			//alert(start)
-			
 			if( now_floor > end_floor ) 	// now is bigger than input date = counting elapsed time
 			{
 				end = 9999999999999999
@@ -224,8 +224,71 @@
 			//var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 			//var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 			// clock
+			var maskTime={
+			'Y' : 60*60*24*365*1000,
+			'O' : 60*60*24*30.4368*1000,
+			'W' : 60*60*24*7*1000,
+			'D' : 60*60*24*1000,
+			'H' : 60*60*1000,
+			'M' : 60*1000,
+			'S' : 1000,
+			'U' : 1
+			}
 			
+			// date validation
+			var t = new Date( self.config.dateTime ).getTime();
+			if( isNaN(t) )
+			{	
+				
+				var currentTime = new Date()
+				// returns the month (from 0 to 11)
+				var month = currentTime.getMonth() + 1
+				// returns the day of the month (from 1 to 31)
+				var day = currentTime.getDate()
+				// returns the year (four digits)
+				var year = currentTime.getFullYear()
+				// write output MM/dd/yyyy
+				//alert(month + "/" + day + "/" + year)
+				var hours = currentTime.getHours()
+				var minutes = currentTime.getMinutes()
+				var seconds = currentTime.getSeconds()
+				//alert(seconds)
+				//var nd = Date.now('Y')
+				//var dt =  self.config.dateTime
+				//var is_date = dt.search("/") !== -1 ? true : false
+				//var is_time = dt.search(":") !== -1 ? true : false
+				
+				//Y-m-d H:i:s
+				self.config.dateTime = self.config.dateTime.replace('%m', month)
+				self.config.dateTime = self.config.dateTime.replace('%d', day)
+				self.config.dateTime = self.config.dateTime.replace('%y', year)
+				self.config.dateTime = self.config.dateTime.replace('%h', hours)
+				self.config.dateTime = self.config.dateTime.replace('%i', minutes)
+				self.config.dateTime = self.config.dateTime.replace('%s', seconds)
+				//if(is_date)
+				//self.config.dateTime = dt +'/'+ year
+				//else if(is_time)
+				//self.config.dateTime = month + "/" + day + "/" + year + ' ' + dt
+				//else
+				//self.config.dateTime = '1/1/1970'
+				
+				var t2 = new Date( self.config.dateTime ).getTime();
+				if( isNaN(t2) )
+				self.config.dateTime = '1/1/1970'
+				//alert( self.config.dateTime )
+			}
+			//self.config.dateTime = '11/30/2015 11:09'
 			//alert(start + " = " + end)
+			//alert( t )
+			//alert(self.config.dateTime )
+			if( !self.config.dateTime )
+			{
+			//self.currentTime = true
+			//self.config.dateTime = Date.now()
+			
+			}
+			
+			//alert( self.config.dateTime )
 			
 			self.speed = 1000 
 			self.tick = 1 
@@ -299,10 +362,15 @@
 				var st = self._setTime()
 				
 				var msec = st[0] 
+				
+				if( val == 0 )		// set time to 0 because of miliseconds
+				msec = 0
+				
 				self.secLeft = msec
+				self.thisTpl = tpl
 				
 				//var thisTpl = tpl
-				self.thisTpl = tpl
+				
 				//var years = 0
 				//var months = 0
 				//var weeks = 0
@@ -509,23 +577,32 @@
 				
 				
 				//{
-				if( typeof self.config.format === 'function')
-				end = self.config.format( end )
 				
-				self.$elem.html( end )
 				//}
 				//}
 				
 				
-				if(self.clock && self.config.switchClock)	// switch clock counter
+				
+				if(self.clock)	// switch clock counter
 				{
 					//self._setSteps( self.end, self.start )
 					//cancelRequestAnimFrame( self.request );
 					//alert(53)
-					
-					self._setClock()
-					self._loop()
+					if( self.config.switchClock )
+					{
+						self._setClock()
+						self._loop()
+					}
+					else
+						end = 0		// set to 0 - miliseconds
 				}
+				
+				//alert(end)
+				
+				if( typeof self.config.format === 'function' )
+				end = self.config.format( end )
+				
+				self.$elem.html( end )
 				
 				//clearInterval( self.timer )
 				
