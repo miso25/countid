@@ -19,4 +19,4 @@ start | data-start  | 0  | start
 end | data-end  | 0  | end
 speed | data-speed  | 10  | speed
 tick | data-tick  | 10  | tick
-dateTime | data-date-time  | 1/1/1970 | Possible formats: You can set this value to absolute MM/DD/YYYY H:i:s or relative MM/DD or H:i or H:i:s ; when relative value is set, counter is counting up or counting down to the provided value of current year/day
+dateTime | data-date-time  | 1/1/1970 | Possible formats: You can set this value to absolute MM/DD/YYYY H:i:s or MM/DD/YYYY or relative MM/DD or H:i or H:i:s ; when relative value is set, counter is counting up or counting down to the provided value of the current year/day
