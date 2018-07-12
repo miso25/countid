@@ -14,7 +14,7 @@ See [jsFiddle](https://jsfiddle.net/miso25/f3vu8pdh/) example to customize your 
 See [jsFiddle](https://jsfiddle.net/miso25/kLnkrzz4/) example to count down and count up clock 
 
 # Options
-A complete listing of the options that can be passed to the method is below.
+A complete listing of the plugin options is below.
 
 Option | Data Attribute | Default | Description
 ----|------|----|----
